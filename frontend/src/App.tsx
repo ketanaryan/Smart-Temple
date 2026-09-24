@@ -22,6 +22,7 @@ function App() {
   
   const [activeTab, setActiveTab] = useState('home'); // 'home' | 'devotee' | 'staff'
   const [isAdmin, setIsAdmin] = useState(localStorage.getItem('adminToken') === 'true');
+  const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
 
   const fetchTemples = async () => {
     try {
@@ -229,17 +230,21 @@ function App() {
               </div>
 
               {!localStorage.getItem('token') ? (
-                <div className="bg-orange-50/80 p-8 rounded-2xl border border-orange-100/50 mb-6 text-center shadow-inner">
-                  <h3 className="font-bold text-orange-900 mb-2 text-lg">Authentication Required</h3>
-                  <p className="text-orange-700/80 text-sm mb-6">Please log in to make a genuine slot booking.</p>
-                  <div className="flex flex-col gap-4">
-                    <input id="authEmail" type="email" placeholder="Email Address" className="p-4 border border-orange-200/50 rounded-xl bg-white shadow-sm focus:ring-2 focus:ring-orange-500 outline-none transition" />
-                    <input id="authPassword" type="password" placeholder="Password" className="p-4 border border-orange-200/50 rounded-xl bg-white shadow-sm focus:ring-2 focus:ring-orange-500 outline-none transition" />
-                    <div className="flex gap-3 mt-4">
+                <div className="bg-orange-50/80 p-8 rounded-2xl border border-orange-100/50 mb-6 text-center shadow-inner relative overflow-hidden transition-all duration-300">
+                  <h3 className="font-bold text-orange-900 mb-2 text-xl">{authMode === 'login' ? 'Welcome Back' : 'Create an Account'}</h3>
+                  <p className="text-orange-700/80 text-sm mb-6">
+                    {authMode === 'login' ? 'Please log in to make a genuine slot booking.' : 'Register to book your Darshan slots.'}
+                  </p>
+                  
+                  {authMode === 'login' ? (
+                    <div className="flex flex-col gap-4 animate-in fade-in slide-in-from-left-4 duration-300">
+                      <input id="loginEmail" type="email" placeholder="Email Address" className="p-4 border border-orange-200/50 rounded-xl bg-white shadow-sm focus:ring-2 focus:ring-orange-500 outline-none transition" />
+                      <input id="loginPassword" type="password" placeholder="Password" className="p-4 border border-orange-200/50 rounded-xl bg-white shadow-sm focus:ring-2 focus:ring-orange-500 outline-none transition" />
+                      
                       <button 
                         onClick={async () => {
-                          const email = (document.getElementById('authEmail') as HTMLInputElement).value;
-                          const pwd = (document.getElementById('authPassword') as HTMLInputElement).value;
+                          const email = (document.getElementById('loginEmail') as HTMLInputElement).value;
+                          const pwd = (document.getElementById('loginPassword') as HTMLInputElement).value;
                           if (!email || !pwd) return alert("Please enter both an email and a password.");
                           try {
                             const formData = new URLSearchParams();
@@ -252,22 +257,46 @@ function App() {
                             window.location.reload();
                           } catch (e: any) { alert("Login Failed: " + (e.response?.data?.detail || "Invalid credentials")); }
                         }}
-                        className="flex-1 bg-gradient-to-r from-orange-600 to-orange-500 hover:from-orange-700 hover:to-orange-600 text-white font-bold py-4 rounded-xl shadow-lg transition-all active:scale-95"
+                        className="w-full mt-2 bg-gradient-to-r from-orange-600 to-orange-500 hover:from-orange-700 hover:to-orange-600 text-white font-bold py-4 rounded-xl shadow-lg transition-all active:scale-[0.98]"
                       >Login</button>
+                      
+                      <p className="mt-4 text-sm text-gray-600">
+                        Don't have an account?{' '}
+                        <button onClick={() => setAuthMode('register')} className="text-orange-600 font-bold hover:underline">Register here</button>
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col gap-4 animate-in fade-in slide-in-from-right-4 duration-300">
+                      <input id="regName" type="text" placeholder="Full Name" className="p-4 border border-orange-200/50 rounded-xl bg-white shadow-sm focus:ring-2 focus:ring-orange-500 outline-none transition" />
+                      <input id="regEmail" type="email" placeholder="Email Address" className="p-4 border border-orange-200/50 rounded-xl bg-white shadow-sm focus:ring-2 focus:ring-orange-500 outline-none transition" />
+                      <input id="regPassword" type="password" placeholder="Password" className="p-4 border border-orange-200/50 rounded-xl bg-white shadow-sm focus:ring-2 focus:ring-orange-500 outline-none transition" />
+                      <input id="regPasswordConfirm" type="password" placeholder="Re-type Password" className="p-4 border border-orange-200/50 rounded-xl bg-white shadow-sm focus:ring-2 focus:ring-orange-500 outline-none transition" />
+                      
                       <button 
                         onClick={async () => {
-                          const email = (document.getElementById('authEmail') as HTMLInputElement).value;
-                          const pwd = (document.getElementById('authPassword') as HTMLInputElement).value;
-                          if (!email || !pwd) return alert("Please enter both an email and a password.");
+                          const name = (document.getElementById('regName') as HTMLInputElement).value;
+                          const email = (document.getElementById('regEmail') as HTMLInputElement).value;
+                          const pwd = (document.getElementById('regPassword') as HTMLInputElement).value;
+                          const pwdConfirm = (document.getElementById('regPasswordConfirm') as HTMLInputElement).value;
+                          
+                          if (!name || !email || !pwd || !pwdConfirm) return alert("Please fill in all fields.");
+                          if (pwd !== pwdConfirm) return alert("Passwords do not match!");
+                          
                           try {
-                            await axios.post(`${API_URL}/register`, { email, password: pwd, name: email.split('@')[0] });
+                            await axios.post(`${API_URL}/register`, { email, password: pwd, name });
                             alert("Registered successfully! Please login now.");
+                            setAuthMode('login');
                           } catch (e: any) { alert("Registration Failed: " + (e.response?.data?.detail || "Error")); }
                         }}
-                        className="flex-1 bg-white border-2 border-gray-200 text-gray-700 font-bold py-4 rounded-xl hover:bg-gray-50 hover:border-gray-300 transition-all active:scale-95"
-                      >Register</button>
+                        className="w-full mt-2 bg-gray-900 hover:bg-black text-white font-bold py-4 rounded-xl shadow-lg transition-all active:scale-[0.98]"
+                      >Create Account</button>
+                      
+                      <p className="mt-4 text-sm text-gray-600">
+                        Already have an account?{' '}
+                        <button onClick={() => setAuthMode('login')} className="text-orange-600 font-bold hover:underline">Login here</button>
+                      </p>
                     </div>
-                  </div>
+                  )}
                 </div>
               ) : (
               <div className="bg-green-50 p-4 rounded-lg border border-green-100 mb-6 flex justify-between items-center">
