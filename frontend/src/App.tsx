@@ -134,75 +134,72 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-800 font-sans flex flex-col">
-      <header className="bg-orange-600 text-white p-4 shadow-md flex justify-between items-center z-10">
-        <h1 className="text-2xl font-bold flex items-center gap-2">
-          <Users className="w-6 h-6" />
-          Smart Temple System
+    <div className={`min-h-screen text-gray-800 font-sans flex flex-col ${activeTab === 'home' ? 'bg-black' : 'bg-gray-50'}`}>
+      <header className="bg-white text-gray-800 p-4 shadow-md flex justify-between items-center z-50 sticky top-0">
+        <h1 className="text-2xl font-black flex items-center gap-2 tracking-tight">
+          <div className="bg-orange-500 text-white p-1.5 rounded-lg"><Users className="w-6 h-6" /></div>
+          Smart Temple
         </h1>
-        <div className="flex gap-4">
+        <div className="flex gap-6 items-center text-sm font-semibold">
           <button 
             onClick={() => setActiveTab('home')}
-            className={`${activeTab === 'home' ? 'font-bold border-b-2 border-white' : 'hover:underline opacity-80'}`}
+            className={`${activeTab === 'home' ? 'text-orange-500 border-b-2 border-orange-500 pb-1' : 'hover:text-orange-500 text-gray-600'}`}
           >
             Home
           </button>
+          <button className="hover:text-orange-500 text-gray-600">Map & Directions</button>
+          <button className="hover:text-orange-500 text-gray-600">Announcements</button>
           <button 
             onClick={() => setActiveTab('devotee')}
-            className={`${activeTab === 'devotee' ? 'font-bold border-b-2 border-white' : 'hover:underline opacity-80'}`}
+            className={`${activeTab === 'devotee' ? 'text-orange-500 border-b-2 border-orange-500 pb-1' : 'hover:text-orange-500 text-gray-600'}`}
           >
-            Devotee Portal
+            Darshan Booking
           </button>
           <button 
             onClick={() => setActiveTab('staff')}
-            className={`${activeTab === 'staff' ? 'font-bold border-b-2 border-white' : 'hover:underline opacity-80'}`}
+            className="bg-orange-500 hover:bg-orange-600 text-white px-5 py-2 rounded-lg transition-colors flex items-center gap-2"
           >
-            Staff Dashboard
+            <ShieldCheck className="w-4 h-4" /> Admin
           </button>
         </div>
       </header>
 
-      <main className="flex-1 p-8 max-w-5xl w-full mx-auto">
+      <main className={`flex-1 flex flex-col ${activeTab === 'home' ? 'w-full' : 'p-8 max-w-5xl w-full mx-auto'}`}>
         
         {activeTab === 'home' && (
-          <section className="flex flex-col items-center justify-center min-h-[70vh] text-center animate-in fade-in slide-in-from-bottom-4 duration-700">
-            <div className="bg-orange-100 text-orange-800 px-4 py-1 rounded-full text-sm font-bold tracking-widest mb-6">NEXT GENERATION TEMPLE MANAGEMENT</div>
-            <h2 className="text-5xl md:text-7xl font-black text-gray-900 mb-6 leading-tight">
-              Divine Experience. <br/><span className="text-orange-600">Smart Technology.</span>
-            </h2>
-            <p className="text-xl text-gray-600 mb-10 max-w-2xl leading-relaxed">
-              Skip the long queues. Our AI-driven Computer Vision and M/M/k Queuing load balancers ensure a peaceful, organized, and truly divine Darshan experience.
-            </p>
-            <div className="flex gap-4">
-              <button 
-                onClick={() => setActiveTab('devotee')}
-                className="bg-orange-600 hover:bg-orange-700 text-white font-bold text-lg px-8 py-4 rounded-xl shadow-lg hover:shadow-orange-500/30 transition-all active:scale-95"
-              >
-                Book Darshan Now
-              </button>
-              <button 
-                onClick={() => setActiveTab('staff')}
-                className="bg-white border-2 border-gray-200 hover:border-gray-300 text-gray-700 font-bold text-lg px-8 py-4 rounded-xl shadow-sm transition-all active:scale-95"
-              >
-                Staff Login
-              </button>
+          <section className="relative flex-1 flex flex-col items-start justify-center text-left min-h-[85vh] animate-in fade-in duration-700 -mt-2">
+            <div 
+              className="absolute inset-0 z-0 bg-cover bg-center"
+              style={{ backgroundImage: "url('https://images.unsplash.com/photo-1621217621815-5654cc3c8b41?q=80&w=2000&auto=format&fit=crop')" }}
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/60 to-transparent"></div>
             </div>
-            
-            <div className="mt-20 grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-4xl text-left">
-              <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-                <div className="w-12 h-12 bg-blue-100 text-blue-600 flex items-center justify-center rounded-xl mb-4"><Users className="w-6 h-6"/></div>
-                <h3 className="font-bold text-lg mb-2">AI Crowd Control</h3>
-                <p className="text-gray-600 text-sm">YOLOv8 Edge-AI analyzes CCTV feeds to intelligently detect heavy congestion and prevent stampedes.</p>
-              </div>
-              <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-                <div className="w-12 h-12 bg-green-100 text-green-600 flex items-center justify-center rounded-xl mb-4"><Clock className="w-6 h-6"/></div>
-                <h3 className="font-bold text-lg mb-2">Zero Wait Times</h3>
-                <p className="text-gray-600 text-sm">M/M/k queuing algorithms dynamically load-balance online bookings vs. walk-in devotees.</p>
-              </div>
-              <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-                <div className="w-12 h-12 bg-purple-100 text-purple-600 flex items-center justify-center rounded-xl mb-4"><QrCode className="w-6 h-6"/></div>
-                <h3 className="font-bold text-lg mb-2">Smart e-Tokens</h3>
-                <p className="text-gray-600 text-sm">Get digital QR tickets and WhatsApp alerts predicting exactly when your turn will come.</p>
+
+            <div className="relative z-10 px-8 md:px-24 max-w-4xl">
+              <h2 className="text-6xl md:text-[5.5rem] font-black text-white leading-[1.1] tracking-tight mb-4 drop-shadow-lg">
+                Welcome to <br/><span className="text-orange-500">Smart Temple</span>
+              </h2>
+              <p className="text-xl md:text-3xl text-gray-200 mb-8 max-w-2xl font-medium drop-shadow-md">
+                We are introducing the innovative solution to <br/><span className="text-orange-400 font-bold border-b-2 border-orange-400 pb-1">Efficient Devotee Flow Management</span>
+              </p>
+              
+              <div className="flex gap-4">
+                <button 
+                  onClick={() => setActiveTab('devotee')}
+                  className="bg-orange-500 hover:bg-orange-600 text-white font-bold text-lg px-8 py-4 rounded-md shadow-lg transition-all active:scale-95 flex items-center gap-2"
+                >
+                  <CalendarCheck className="w-5 h-5"/> Book Darshan &rarr;
+                </button>
+                <button 
+                  onClick={() => setActiveTab('staff')}
+                  className="bg-black/40 backdrop-blur-sm border border-gray-400 hover:bg-black/60 text-white font-bold text-lg px-8 py-4 rounded-md shadow-sm transition-all active:scale-95 flex items-center gap-3"
+                >
+                  <span className="relative flex h-3 w-3">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+                  </span>
+                  Live Crowd Status
+                </button>
               </div>
             </div>
           </section>
