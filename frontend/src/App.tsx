@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Users, Clock, AlertTriangle, CalendarCheck } from 'lucide-react';
+import { Users, Clock, AlertTriangle, CalendarCheck, Bell, Cloud, Thermometer, ShieldCheck, CheckCircle2, QrCode } from 'lucide-react';
+import { QRCodeSVG } from 'qrcode.react';
 
 const API_URL = 'http://127.0.0.1:8000';
 
@@ -14,6 +15,9 @@ function App() {
   
   const [queueStatus, setQueueStatus] = useState<any>(null);
   const [bookingMessage, setBookingMessage] = useState('');
+  const [bookedToken, setBookedToken] = useState('');
+  const [isPriority, setIsPriority] = useState(false);
+  const [notifyWhatsApp, setNotifyWhatsApp] = useState(true);
   const [currentToken, setCurrentToken] = useState('');
   
   const [activeTab, setActiveTab] = useState('devotee'); // 'devotee' | 'staff'
@@ -99,7 +103,8 @@ function App() {
       }, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setBookingMessage(`Success! Your token is ${res.data.token_number}`);
+      setBookingMessage(`Success!`);
+      setBookedToken(res.data.token_number);
       fetchSlots(); // Refresh availability
       fetchQueueStatus(); // Refresh queue
     } catch (e: any) {
@@ -261,6 +266,23 @@ function App() {
               )}
             </div>
 
+            <div className="bg-gray-50 border p-4 rounded-lg mb-6 flex flex-col gap-3">
+              <label className="flex items-center gap-3 cursor-pointer">
+                <input type="checkbox" className="w-5 h-5 accent-orange-600 rounded" checked={isPriority} onChange={e => setIsPriority(e.target.checked)} />
+                <div>
+                  <div className="font-bold text-gray-800">Senior Citizen / Divyang (Priority)</div>
+                  <div className="text-xs text-gray-500">Expedites queue progression automatically</div>
+                </div>
+              </label>
+              <label className="flex items-center gap-3 cursor-pointer">
+                <input type="checkbox" className="w-5 h-5 accent-green-600 rounded" checked={notifyWhatsApp} onChange={e => setNotifyWhatsApp(e.target.checked)} />
+                <div>
+                  <div className="font-bold text-green-800 flex items-center gap-1">Enable WhatsApp Alerts <Bell className="w-4 h-4"/></div>
+                  <div className="text-xs text-gray-500">Get notified 15 mins before your expected darshan time</div>
+                </div>
+              </label>
+            </div>
+
             <button 
               onClick={handleBooking}
               className="w-full bg-orange-600 text-white p-4 rounded-lg font-bold text-lg hover:bg-orange-700 hover:shadow-lg transition-all active:scale-[0.98]"
@@ -269,8 +291,21 @@ function App() {
             </button>
             
             {bookingMessage && (
-              <div className={`mt-4 p-4 rounded-lg text-sm font-bold border ${bookingMessage.includes('Success') ? 'bg-green-50 text-green-800 border-green-200' : 'bg-red-50 text-red-800 border-red-200'}`}>
-                {bookingMessage}
+              <div className={`mt-6 p-6 rounded-xl border-2 flex flex-col items-center text-center shadow-lg animate-in fade-in zoom-in duration-300 ${bookingMessage.includes('Success') ? 'bg-green-50/80 border-green-400' : 'bg-red-50 text-red-800 border-red-200'}`}>
+                {bookingMessage.includes('Success') ? (
+                  <>
+                    <CheckCircle2 className="w-16 h-16 text-green-500 mb-2" />
+                    <h3 className="text-2xl font-black text-green-800 tracking-wider">{bookedToken}</h3>
+                    <p className="text-green-700 font-medium mb-4">Your e-Darshan Token</p>
+                    <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+                      <QRCodeSVG value={bookedToken} size={160} level="H" includeMargin={true} fgColor="#064e3b" />
+                    </div>
+                    <p className="text-sm text-gray-600 mt-4 flex items-center gap-2"><QrCode className="w-4 h-4"/> Show this QR at the smart entrance gate</p>
+                    {notifyWhatsApp && <p className="text-xs font-bold text-green-700 mt-2">✓ WhatsApp alerts enabled for +91 ********</p>}
+                  </>
+                ) : (
+                  <span className="font-bold">{bookingMessage}</span>
+                )}
               </div>
             )}
           </section>
@@ -289,6 +324,26 @@ function App() {
                   <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
                 </span>
                 <span className="text-sm font-medium text-gray-500 uppercase tracking-wider">Live</span>
+              </div>
+            </div>
+
+            {/* NEW: IoT Environment Sensors Mock */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 bg-gray-50 border rounded-xl p-4 shadow-sm">
+              <div className="flex items-center gap-3 border-r pr-4">
+                <div className="p-2 bg-blue-100 text-blue-600 rounded-lg"><Thermometer className="w-5 h-5"/></div>
+                <div><div className="text-xs font-bold text-gray-500">AMBIENT TEMP</div><div className="text-lg font-black text-gray-800">24.5°C</div></div>
+              </div>
+              <div className="flex items-center gap-3 border-r pr-4">
+                <div className="p-2 bg-cyan-100 text-cyan-600 rounded-lg"><Cloud className="w-5 h-5"/></div>
+                <div><div className="text-xs font-bold text-gray-500">INDOOR AQI</div><div className="text-lg font-black text-gray-800">42 <span className="text-xs font-bold text-green-500">GOOD</span></div></div>
+              </div>
+              <div className="flex items-center gap-3 border-r pr-4">
+                <div className="p-2 bg-purple-100 text-purple-600 rounded-lg"><Users className="w-5 h-5"/></div>
+                <div><div className="text-xs font-bold text-gray-500">CAPACITY (ZONE A)</div><div className="text-lg font-black text-gray-800">68%</div></div>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-teal-100 text-teal-600 rounded-lg"><ShieldCheck className="w-5 h-5"/></div>
+                <div><div className="text-xs font-bold text-gray-500">SECURITY STATUS</div><div className="text-lg font-black text-teal-700">SECURE</div></div>
               </div>
             </div>
             
