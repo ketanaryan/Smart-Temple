@@ -625,11 +625,11 @@ function App() {
           </section>
         )}
         {activeTab === 'admin' && (
-          <section className="bg-white p-8 rounded-xl shadow-sm border border-gray-100 flex flex-col gap-8 max-w-4xl mx-auto animate-in fade-in duration-300">
+          <section className="bg-white p-5 md:p-8 rounded-xl shadow-sm border border-gray-100 flex flex-col gap-6 md:gap-8 max-w-4xl mx-auto animate-in fade-in duration-300 w-[95%] md:w-full my-4 md:my-0">
             <div className="flex justify-between items-center border-b pb-4">
-              <h2 className="text-2xl font-bold flex items-center gap-3 text-orange-600">
-                <ShieldCheck className="w-7 h-7" />
-                Temple Administrator Portal
+              <h2 className="text-xl md:text-2xl font-bold flex items-center gap-2 md:gap-3 text-orange-600">
+                <ShieldCheck className="w-6 h-6 md:w-7 md:h-7" />
+                Temple Admin Portal
               </h2>
             </div>
             
@@ -655,17 +655,17 @@ function App() {
               </div>
             ) : (
               <div className="flex flex-col gap-6 animate-in slide-in-from-bottom-4 duration-500">
-                <div className="bg-gray-900 text-white p-6 rounded-2xl flex justify-between items-center shadow-lg border border-gray-800">
+                <div className="bg-gray-900 text-white p-6 rounded-2xl flex flex-col md:flex-row justify-between items-center gap-6 md:gap-0 shadow-lg border border-gray-800 text-center md:text-left">
                   <div>
                     <div className="text-gray-400 font-bold uppercase tracking-widest text-sm mb-1">Queue Control</div>
                     <div className="text-4xl font-black text-orange-500 tracking-wider">
                       {currentToken || "WAITING"}
                     </div>
                   </div>
-                  <div className="flex flex-col gap-2 items-end">
+                  <div className="flex flex-col gap-2 items-center md:items-end w-full md:w-auto">
                     <button 
                       onClick={handleCallNext}
-                      className="bg-orange-600 hover:bg-orange-500 text-white px-10 py-5 rounded-xl font-black text-xl shadow-lg transition-all active:scale-95 flex items-center gap-2 border-b-4 border-orange-800"
+                      className="w-full md:w-auto justify-center bg-orange-600 hover:bg-orange-500 text-white px-6 py-4 md:px-10 md:py-5 rounded-xl font-black text-lg md:text-xl shadow-lg transition-all active:scale-95 flex items-center gap-2 border-b-4 border-orange-800"
                     >
                       CALL NEXT DEVOTEE
                     </button>
@@ -682,21 +682,21 @@ function App() {
                 </div>
 
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 bg-gray-50 border rounded-xl p-4 shadow-sm">
-                  <div className="flex items-center gap-3 border-r pr-4">
-                    <div className="p-2 bg-blue-100 text-blue-600 rounded-lg"><Thermometer className="w-5 h-5"/></div>
-                    <div><div className="text-xs font-bold text-gray-500">AMBIENT TEMP</div><div className="text-lg font-black text-gray-800">24.5°C</div></div>
+                  <div className="flex flex-col md:flex-row items-center md:items-start text-center md:text-left gap-2 md:gap-3 md:border-r md:pr-4">
+                    <div className="p-2 bg-blue-100 text-blue-600 rounded-lg flex-shrink-0"><Thermometer className="w-5 h-5"/></div>
+                    <div><div className="text-[10px] md:text-xs font-bold text-gray-500">AMBIENT TEMP</div><div className="text-base md:text-lg font-black text-gray-800">24.5°C</div></div>
                   </div>
-                  <div className="flex items-center gap-3 border-r pr-4">
-                    <div className="p-2 bg-cyan-100 text-cyan-600 rounded-lg"><Cloud className="w-5 h-5"/></div>
-                    <div><div className="text-xs font-bold text-gray-500">INDOOR AQI</div><div className="text-lg font-black text-gray-800">42 <span className="text-xs font-bold text-green-500">GOOD</span></div></div>
+                  <div className="flex flex-col md:flex-row items-center md:items-start text-center md:text-left gap-2 md:gap-3 md:border-r md:pr-4 border-l pl-4 md:border-l-0 md:pl-0">
+                    <div className="p-2 bg-cyan-100 text-cyan-600 rounded-lg flex-shrink-0"><Cloud className="w-5 h-5"/></div>
+                    <div><div className="text-[10px] md:text-xs font-bold text-gray-500">INDOOR AQI</div><div className="text-base md:text-lg font-black text-gray-800">42 <span className="text-[10px] font-bold text-green-500">GOOD</span></div></div>
                   </div>
-                  <div className="flex items-center gap-3 border-r pr-4">
-                    <div className="p-2 bg-purple-100 text-purple-600 rounded-lg"><Users className="w-5 h-5"/></div>
-                    <div><div className="text-xs font-bold text-gray-500">CAPACITY (ZONE A)</div><div className="text-lg font-black text-gray-800">68%</div></div>
+                  <div className="flex flex-col md:flex-row items-center md:items-start text-center md:text-left gap-2 md:gap-3 md:border-r md:pr-4 pt-4 md:pt-0 border-t md:border-t-0 col-span-1">
+                    <div className="p-2 bg-purple-100 text-purple-600 rounded-lg flex-shrink-0"><Users className="w-5 h-5"/></div>
+                    <div><div className="text-[10px] md:text-xs font-bold text-gray-500">CAPACITY</div><div className="text-base md:text-lg font-black text-gray-800">68%</div></div>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 bg-teal-100 text-teal-600 rounded-lg"><ShieldCheck className="w-5 h-5"/></div>
-                    <div><div className="text-xs font-bold text-gray-500">SECURITY STATUS</div><div className="text-lg font-black text-teal-700">SECURE</div></div>
+                  <div className="flex flex-col md:flex-row items-center md:items-start text-center md:text-left gap-2 md:gap-3 pt-4 md:pt-0 border-t border-l pl-4 md:border-t-0 md:border-l-0 md:pl-0 col-span-1">
+                    <div className="p-2 bg-teal-100 text-teal-600 rounded-lg flex-shrink-0"><ShieldCheck className="w-5 h-5"/></div>
+                    <div><div className="text-[10px] md:text-xs font-bold text-gray-500">SECURITY</div><div className="text-base md:text-lg font-black text-teal-700">SECURE</div></div>
                   </div>
                 </div>
 
