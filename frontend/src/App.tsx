@@ -147,8 +147,6 @@ function App() {
           >
             Home
           </button>
-          <button className="hover:text-orange-500 text-gray-600">Map & Directions</button>
-          <button className="hover:text-orange-500 text-gray-600">Announcements</button>
           <button 
             onClick={() => setActiveTab('devotee')}
             className={`${activeTab === 'devotee' ? 'text-orange-500 border-b-2 border-orange-500 pb-1' : 'hover:text-orange-500 text-gray-600'}`}
@@ -157,9 +155,9 @@ function App() {
           </button>
           <button 
             onClick={() => setActiveTab('staff')}
-            className="bg-orange-500 hover:bg-orange-600 text-white px-5 py-2 rounded-lg transition-colors flex items-center gap-2"
+            className="bg-orange-500 hover:bg-orange-600 text-white px-5 py-2 rounded-lg transition-colors flex items-center gap-2 cursor-pointer"
           >
-            <ShieldCheck className="w-4 h-4" /> Admin
+            <ShieldCheck className="w-4 h-4" /> Live Dashboard
           </button>
         </div>
       </header>
