@@ -21,6 +21,7 @@ function App() {
   const [currentToken, setCurrentToken] = useState('');
   
   const [activeTab, setActiveTab] = useState('home'); // 'home' | 'devotee' | 'staff'
+  const [isAdmin, setIsAdmin] = useState(localStorage.getItem('adminToken') === 'true');
 
   const fetchTemples = async () => {
     try {
@@ -405,12 +406,40 @@ function App() {
                       {currentToken || "WAITING"}
                     </div>
                   </div>
-                  <button 
-                    onClick={handleCallNext}
-                    className="mt-4 md:mt-0 bg-orange-600 hover:bg-orange-500 text-white px-8 py-4 rounded-xl font-bold text-xl shadow-lg transition-all active:scale-95 flex items-center gap-2"
-                  >
-                    CALL NEXT
-                  </button>
+                  {isAdmin ? (
+                    <div className="flex flex-col gap-2 items-end">
+                      <button 
+                        onClick={handleCallNext}
+                        className="mt-4 md:mt-0 bg-orange-600 hover:bg-orange-500 text-white px-8 py-4 rounded-xl font-bold text-xl shadow-lg transition-all active:scale-95 flex items-center gap-2"
+                      >
+                        CALL NEXT
+                      </button>
+                      <button 
+                        onClick={() => {
+                          localStorage.removeItem('adminToken');
+                          setIsAdmin(false);
+                        }}
+                        className="text-xs text-gray-500 hover:text-gray-300 underline"
+                      >
+                        Lock Admin Controls
+                      </button>
+                    </div>
+                  ) : (
+                    <button 
+                      onClick={() => {
+                        const pwd = prompt("Enter admin password to unlock queue controls (password: admin):");
+                        if (pwd === "admin") {
+                          localStorage.setItem('adminToken', 'true');
+                          setIsAdmin(true);
+                        } else if (pwd) {
+                          alert("Incorrect password.");
+                        }
+                      }}
+                      className="mt-4 md:mt-0 bg-gray-800 hover:bg-gray-700 text-gray-400 px-6 py-3 rounded-lg font-bold text-sm shadow-inner transition-all flex items-center gap-2 border border-gray-700"
+                    >
+                      <ShieldCheck className="w-4 h-4"/> Admin Unlock Required
+                    </button>
+                  )}
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
