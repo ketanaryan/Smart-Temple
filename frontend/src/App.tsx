@@ -240,6 +240,7 @@ function App() {
                         onClick={async () => {
                           const email = (document.getElementById('authEmail') as HTMLInputElement).value;
                           const pwd = (document.getElementById('authPassword') as HTMLInputElement).value;
+                          if (!email || !pwd) return alert("Please enter both an email and a password.");
                           try {
                             const formData = new URLSearchParams();
                             formData.append('username', email);
@@ -257,6 +258,7 @@ function App() {
                         onClick={async () => {
                           const email = (document.getElementById('authEmail') as HTMLInputElement).value;
                           const pwd = (document.getElementById('authPassword') as HTMLInputElement).value;
+                          if (!email || !pwd) return alert("Please enter both an email and a password.");
                           try {
                             await axios.post(`${API_URL}/register`, { email, password: pwd, name: email.split('@')[0] });
                             alert("Registered successfully! Please login now.");
