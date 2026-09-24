@@ -20,7 +20,7 @@ function App() {
   const [notifyWhatsApp, setNotifyWhatsApp] = useState(true);
   const [currentToken, setCurrentToken] = useState('');
   
-  const [activeTab, setActiveTab] = useState('devotee'); // 'devotee' | 'staff'
+  const [activeTab, setActiveTab] = useState('home'); // 'home' | 'devotee' | 'staff'
 
   const fetchTemples = async () => {
     try {
@@ -142,6 +142,12 @@ function App() {
         </h1>
         <div className="flex gap-4">
           <button 
+            onClick={() => setActiveTab('home')}
+            className={`${activeTab === 'home' ? 'font-bold border-b-2 border-white' : 'hover:underline opacity-80'}`}
+          >
+            Home
+          </button>
+          <button 
             onClick={() => setActiveTab('devotee')}
             className={`${activeTab === 'devotee' ? 'font-bold border-b-2 border-white' : 'hover:underline opacity-80'}`}
           >
@@ -158,8 +164,52 @@ function App() {
 
       <main className="flex-1 p-8 max-w-5xl w-full mx-auto">
         
+        {activeTab === 'home' && (
+          <section className="flex flex-col items-center justify-center min-h-[70vh] text-center animate-in fade-in slide-in-from-bottom-4 duration-700">
+            <div className="bg-orange-100 text-orange-800 px-4 py-1 rounded-full text-sm font-bold tracking-widest mb-6">NEXT GENERATION TEMPLE MANAGEMENT</div>
+            <h2 className="text-5xl md:text-7xl font-black text-gray-900 mb-6 leading-tight">
+              Divine Experience. <br/><span className="text-orange-600">Smart Technology.</span>
+            </h2>
+            <p className="text-xl text-gray-600 mb-10 max-w-2xl leading-relaxed">
+              Skip the long queues. Our AI-driven Computer Vision and M/M/k Queuing load balancers ensure a peaceful, organized, and truly divine Darshan experience.
+            </p>
+            <div className="flex gap-4">
+              <button 
+                onClick={() => setActiveTab('devotee')}
+                className="bg-orange-600 hover:bg-orange-700 text-white font-bold text-lg px-8 py-4 rounded-xl shadow-lg hover:shadow-orange-500/30 transition-all active:scale-95"
+              >
+                Book Darshan Now
+              </button>
+              <button 
+                onClick={() => setActiveTab('staff')}
+                className="bg-white border-2 border-gray-200 hover:border-gray-300 text-gray-700 font-bold text-lg px-8 py-4 rounded-xl shadow-sm transition-all active:scale-95"
+              >
+                Staff Login
+              </button>
+            </div>
+            
+            <div className="mt-20 grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-4xl text-left">
+              <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                <div className="w-12 h-12 bg-blue-100 text-blue-600 flex items-center justify-center rounded-xl mb-4"><Users className="w-6 h-6"/></div>
+                <h3 className="font-bold text-lg mb-2">AI Crowd Control</h3>
+                <p className="text-gray-600 text-sm">YOLOv8 Edge-AI analyzes CCTV feeds to intelligently detect heavy congestion and prevent stampedes.</p>
+              </div>
+              <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                <div className="w-12 h-12 bg-green-100 text-green-600 flex items-center justify-center rounded-xl mb-4"><Clock className="w-6 h-6"/></div>
+                <h3 className="font-bold text-lg mb-2">Zero Wait Times</h3>
+                <p className="text-gray-600 text-sm">M/M/k queuing algorithms dynamically load-balance online bookings vs. walk-in devotees.</p>
+              </div>
+              <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                <div className="w-12 h-12 bg-purple-100 text-purple-600 flex items-center justify-center rounded-xl mb-4"><QrCode className="w-6 h-6"/></div>
+                <h3 className="font-bold text-lg mb-2">Smart e-Tokens</h3>
+                <p className="text-gray-600 text-sm">Get digital QR tickets and WhatsApp alerts predicting exactly when your turn will come.</p>
+              </div>
+            </div>
+          </section>
+        )}
+
         {activeTab === 'devotee' && (
-          <section className="bg-white p-8 rounded-xl shadow-sm border border-gray-100 max-w-2xl mx-auto">
+          <section className="bg-white p-8 rounded-xl shadow-sm border border-gray-100 max-w-2xl mx-auto animate-in fade-in duration-300">
             <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
               <CalendarCheck className="w-6 h-6 text-orange-500" />
               Book your Darshan Slot
@@ -211,100 +261,104 @@ function App() {
               </div>
             )}
             
-            <div className="mb-5">
-              <label className="block text-sm font-semibold mb-2 text-gray-700">Select Temple</label>
-              <select 
-                className="w-full border p-3 rounded-lg bg-gray-50 focus:bg-white focus:ring-2 focus:ring-orange-500 outline-none transition" 
-                value={selectedTemple}
-                onChange={(e) => setSelectedTemple(e.target.value)}
-              >
-                {temples.map((t: any) => (
-                  <option key={t.id} value={t.id}>{t.name}, {t.city}</option>
-                ))}
-              </select>
-            </div>
-
-            <div className="mb-6">
-              <label className="block text-sm font-semibold mb-2 text-gray-700">Select Date</label>
-              <input 
-                type="date" 
-                className="w-full border p-3 rounded-lg bg-gray-50 focus:bg-white focus:ring-2 focus:ring-orange-500 outline-none transition" 
-                value={selectedDate}
-                onChange={(e) => setSelectedDate(e.target.value)}
-              />
-            </div>
-            
-            <label className="block text-sm font-semibold mb-2 text-gray-700">Available Slots</label>
-            <div className="grid grid-cols-2 gap-3 mb-6">
-              {slots.length === 0 ? (
-                <div className="col-span-2 text-gray-500 text-sm p-4 bg-gray-50 rounded-lg text-center border border-dashed">No slots found for this date.</div>
-              ) : (
-                slots.map(slot => (
-                  <button 
-                    key={slot.id}
-                    onClick={() => {
-                      if (slot.availability > 0) setSelectedSlot(slot.id);
-                    }}
-                    disabled={slot.availability <= 0}
-                    className={`p-3 rounded-lg border-2 transition text-left relative overflow-hidden ${
-                      slot.availability <= 0 
-                        ? 'border-gray-200 bg-gray-50 text-gray-400 cursor-not-allowed'
-                        : selectedSlot === slot.id 
-                          ? 'border-orange-500 bg-orange-50 text-orange-800 shadow-sm'
-                          : 'border-gray-200 text-gray-700 hover:border-orange-300 hover:bg-orange-50/50'
-                    }`}
+            {localStorage.getItem('token') && (
+              <div className="animate-in fade-in slide-in-from-top-4 duration-500">
+                <div className="mb-5">
+                  <label className="block text-sm font-semibold mb-2 text-gray-700">Select Temple</label>
+                  <select 
+                    className="w-full border p-3 rounded-lg bg-gray-50 focus:bg-white focus:ring-2 focus:ring-orange-500 outline-none transition" 
+                    value={selectedTemple}
+                    onChange={(e) => setSelectedTemple(e.target.value)}
                   >
-                    <div className="font-semibold">{formatTime(slot.start_time)} - {formatTime(slot.end_time)}</div>
-                    <div className={`text-xs mt-1 font-medium ${slot.availability <= 0 ? 'text-red-500' : 'text-green-600'}`}>
-                      {slot.availability <= 0 ? 'FULLY BOOKED' : `${slot.availability} spots remaining`}
+                    {temples.map((t: any) => (
+                      <option key={t.id} value={t.id}>{t.name}, {t.city}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="mb-6">
+                  <label className="block text-sm font-semibold mb-2 text-gray-700">Select Date</label>
+                  <input 
+                    type="date" 
+                    className="w-full border p-3 rounded-lg bg-gray-50 focus:bg-white focus:ring-2 focus:ring-orange-500 outline-none transition" 
+                    value={selectedDate}
+                    onChange={(e) => setSelectedDate(e.target.value)}
+                  />
+                </div>
+                
+                <label className="block text-sm font-semibold mb-2 text-gray-700">Available Slots</label>
+                <div className="grid grid-cols-2 gap-3 mb-6">
+                  {slots.length === 0 ? (
+                    <div className="col-span-2 text-gray-500 text-sm p-4 bg-gray-50 rounded-lg text-center border border-dashed">No slots found for this date.</div>
+                  ) : (
+                    slots.map(slot => (
+                      <button 
+                        key={slot.id}
+                        onClick={() => {
+                          if (slot.availability > 0) setSelectedSlot(slot.id);
+                        }}
+                        disabled={slot.availability <= 0}
+                        className={`p-3 rounded-lg border-2 transition text-left relative overflow-hidden ${
+                          slot.availability <= 0 
+                            ? 'border-gray-200 bg-gray-50 text-gray-400 cursor-not-allowed'
+                            : selectedSlot === slot.id 
+                              ? 'border-orange-500 bg-orange-50 text-orange-800 shadow-sm'
+                              : 'border-gray-200 text-gray-700 hover:border-orange-300 hover:bg-orange-50/50'
+                        }`}
+                      >
+                        <div className="font-semibold">{formatTime(slot.start_time)} - {formatTime(slot.end_time)}</div>
+                        <div className={`text-xs mt-1 font-medium ${slot.availability <= 0 ? 'text-red-500' : 'text-green-600'}`}>
+                          {slot.availability <= 0 ? 'FULLY BOOKED' : `${slot.availability} spots remaining`}
+                        </div>
+                        {selectedSlot === slot.id && (
+                          <div className="absolute right-3 top-1/2 -translate-y-1/2 w-3 h-3 bg-orange-500 rounded-full"></div>
+                        )}
+                      </button>
+                    ))
+                  )}
+                </div>
+
+                <div className="bg-gray-50 border p-4 rounded-lg mb-6 flex flex-col gap-3">
+                  <label className="flex items-center gap-3 cursor-pointer">
+                    <input type="checkbox" className="w-5 h-5 accent-orange-600 rounded" checked={isPriority} onChange={e => setIsPriority(e.target.checked)} />
+                    <div>
+                      <div className="font-bold text-gray-800">Senior Citizen / Divyang (Priority)</div>
+                      <div className="text-xs text-gray-500">Expedites queue progression automatically</div>
                     </div>
-                    {selectedSlot === slot.id && (
-                      <div className="absolute right-3 top-1/2 -translate-y-1/2 w-3 h-3 bg-orange-500 rounded-full"></div>
+                  </label>
+                  <label className="flex items-center gap-3 cursor-pointer">
+                    <input type="checkbox" className="w-5 h-5 accent-green-600 rounded" checked={notifyWhatsApp} onChange={e => setNotifyWhatsApp(e.target.checked)} />
+                    <div>
+                      <div className="font-bold text-green-800 flex items-center gap-1">Enable WhatsApp Alerts <Bell className="w-4 h-4"/></div>
+                      <div className="text-xs text-gray-500">Get notified 15 mins before your expected darshan time</div>
+                    </div>
+                  </label>
+                </div>
+
+                <button 
+                  onClick={handleBooking}
+                  className="w-full bg-orange-600 text-white p-4 rounded-lg font-bold text-lg hover:bg-orange-700 hover:shadow-lg transition-all active:scale-[0.98]"
+                >
+                  Confirm Booking
+                </button>
+                
+                {bookingMessage && (
+                  <div className={`mt-6 p-6 rounded-xl border-2 flex flex-col items-center text-center shadow-lg animate-in fade-in zoom-in duration-300 ${bookingMessage.includes('Success') ? 'bg-green-50/80 border-green-400' : 'bg-red-50 text-red-800 border-red-200'}`}>
+                    {bookingMessage.includes('Success') ? (
+                      <>
+                        <CheckCircle2 className="w-16 h-16 text-green-500 mb-2" />
+                        <h3 className="text-2xl font-black text-green-800 tracking-wider">{bookedToken}</h3>
+                        <p className="text-green-700 font-medium mb-4">Your e-Darshan Token</p>
+                        <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+                          <QRCodeSVG value={bookedToken} size={160} level="H" includeMargin={true} fgColor="#064e3b" />
+                        </div>
+                        <p className="text-sm text-gray-600 mt-4 flex items-center gap-2"><QrCode className="w-4 h-4"/> Show this QR at the smart entrance gate</p>
+                        {notifyWhatsApp && <p className="text-xs font-bold text-green-700 mt-2">✓ WhatsApp alerts enabled for +91 ********</p>}
+                      </>
+                    ) : (
+                      <span className="font-bold">{bookingMessage}</span>
                     )}
-                  </button>
-                ))
-              )}
-            </div>
-
-            <div className="bg-gray-50 border p-4 rounded-lg mb-6 flex flex-col gap-3">
-              <label className="flex items-center gap-3 cursor-pointer">
-                <input type="checkbox" className="w-5 h-5 accent-orange-600 rounded" checked={isPriority} onChange={e => setIsPriority(e.target.checked)} />
-                <div>
-                  <div className="font-bold text-gray-800">Senior Citizen / Divyang (Priority)</div>
-                  <div className="text-xs text-gray-500">Expedites queue progression automatically</div>
-                </div>
-              </label>
-              <label className="flex items-center gap-3 cursor-pointer">
-                <input type="checkbox" className="w-5 h-5 accent-green-600 rounded" checked={notifyWhatsApp} onChange={e => setNotifyWhatsApp(e.target.checked)} />
-                <div>
-                  <div className="font-bold text-green-800 flex items-center gap-1">Enable WhatsApp Alerts <Bell className="w-4 h-4"/></div>
-                  <div className="text-xs text-gray-500">Get notified 15 mins before your expected darshan time</div>
-                </div>
-              </label>
-            </div>
-
-            <button 
-              onClick={handleBooking}
-              className="w-full bg-orange-600 text-white p-4 rounded-lg font-bold text-lg hover:bg-orange-700 hover:shadow-lg transition-all active:scale-[0.98]"
-            >
-              Confirm Booking
-            </button>
-            
-            {bookingMessage && (
-              <div className={`mt-6 p-6 rounded-xl border-2 flex flex-col items-center text-center shadow-lg animate-in fade-in zoom-in duration-300 ${bookingMessage.includes('Success') ? 'bg-green-50/80 border-green-400' : 'bg-red-50 text-red-800 border-red-200'}`}>
-                {bookingMessage.includes('Success') ? (
-                  <>
-                    <CheckCircle2 className="w-16 h-16 text-green-500 mb-2" />
-                    <h3 className="text-2xl font-black text-green-800 tracking-wider">{bookedToken}</h3>
-                    <p className="text-green-700 font-medium mb-4">Your e-Darshan Token</p>
-                    <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
-                      <QRCodeSVG value={bookedToken} size={160} level="H" includeMargin={true} fgColor="#064e3b" />
-                    </div>
-                    <p className="text-sm text-gray-600 mt-4 flex items-center gap-2"><QrCode className="w-4 h-4"/> Show this QR at the smart entrance gate</p>
-                    {notifyWhatsApp && <p className="text-xs font-bold text-green-700 mt-2">✓ WhatsApp alerts enabled for +91 ********</p>}
-                  </>
-                ) : (
-                  <span className="font-bold">{bookingMessage}</span>
+                  </div>
                 )}
               </div>
             )}
