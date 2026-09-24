@@ -560,30 +560,86 @@ function App() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
-                  <div className="bg-gray-50 p-6 rounded-xl border">
-                    <h4 className="font-bold text-gray-700 mb-2">Current Analytics</h4>
-                    <p className="text-sm text-gray-500 mb-4">Live breakdown of the queue.</p>
-                    <div className="flex justify-between items-center border-b pb-2 mb-2">
-                      <span className="text-sm font-bold text-gray-600">Online Queue</span>
-                      <span className="font-black text-blue-600">{queueStatus?.online_queue || 0}</span>
-                    </div>
-                    <div className="flex justify-between items-center border-b pb-2 mb-2">
-                      <span className="text-sm font-bold text-gray-600">Walk-in Queue</span>
-                      <span className="font-black text-green-600">{queueStatus?.walkin_queue || 0}</span>
-                    </div>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 bg-gray-50 border rounded-xl p-4 shadow-sm">
+                  <div className="flex items-center gap-3 border-r pr-4">
+                    <div className="p-2 bg-blue-100 text-blue-600 rounded-lg"><Thermometer className="w-5 h-5"/></div>
+                    <div><div className="text-xs font-bold text-gray-500">AMBIENT TEMP</div><div className="text-lg font-black text-gray-800">24.5°C</div></div>
                   </div>
-                  <div className="bg-orange-50 p-6 rounded-xl border border-orange-100">
-                    <h4 className="font-bold text-orange-800 mb-2">System Diagnostics</h4>
-                    <p className="text-sm text-orange-600 mb-4">WebSocket and AI Server status.</p>
-                    <div className="flex items-center gap-2 text-sm font-bold text-green-700 mb-2">
-                      <span className="w-2 h-2 rounded-full bg-green-500"></span> WebSocket Broadcaster: Connected
-                    </div>
-                    <div className="flex items-center gap-2 text-sm font-bold text-green-700">
-                      <span className="w-2 h-2 rounded-full bg-green-500"></span> YOLOv8 Crowd CV: Active
-                    </div>
+                  <div className="flex items-center gap-3 border-r pr-4">
+                    <div className="p-2 bg-cyan-100 text-cyan-600 rounded-lg"><Cloud className="w-5 h-5"/></div>
+                    <div><div className="text-xs font-bold text-gray-500">INDOOR AQI</div><div className="text-lg font-black text-gray-800">42 <span className="text-xs font-bold text-green-500">GOOD</span></div></div>
+                  </div>
+                  <div className="flex items-center gap-3 border-r pr-4">
+                    <div className="p-2 bg-purple-100 text-purple-600 rounded-lg"><Users className="w-5 h-5"/></div>
+                    <div><div className="text-xs font-bold text-gray-500">CAPACITY (ZONE A)</div><div className="text-lg font-black text-gray-800">68%</div></div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-teal-100 text-teal-600 rounded-lg"><ShieldCheck className="w-5 h-5"/></div>
+                    <div><div className="text-xs font-bold text-gray-500">SECURITY STATUS</div><div className="text-lg font-black text-teal-700">SECURE</div></div>
                   </div>
                 </div>
+
+                {queueStatus && (
+                  <>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                      <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-2xl text-center border border-blue-200 shadow-sm relative overflow-hidden">
+                        <div className="absolute top-0 left-0 w-1 h-full bg-blue-500"></div>
+                        <div className="text-sm text-blue-700 font-bold uppercase tracking-wider">Online Booking Queue</div>
+                        <div className="text-6xl font-black text-blue-900 my-4">{queueStatus.online_queue}</div>
+                        <div className="text-sm text-blue-600 font-medium">waiting devotees</div>
+                      </div>
+                      <div className="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-2xl text-center border border-green-200 shadow-sm relative overflow-hidden">
+                        <div className="absolute top-0 left-0 w-1 h-full bg-green-500"></div>
+                        <div className="text-sm text-green-700 font-bold uppercase tracking-wider">Walk-in Queue</div>
+                        <div className="text-6xl font-black text-green-900 my-4">{queueStatus.walkin_queue}</div>
+                        <div className="text-sm text-green-600 font-medium">waiting devotees</div>
+                      </div>
+                    </div>
+
+                    <div className="bg-yellow-50 border border-yellow-300 p-6 rounded-2xl flex gap-4 shadow-sm items-start">
+                      <AlertTriangle className="w-8 h-8 text-yellow-600 flex-shrink-0 mt-1" />
+                      <div>
+                        <div className="font-bold text-yellow-900 text-xl mb-1">Dynamic Queue Balancer</div>
+                        <div className="text-yellow-800 leading-relaxed">
+                          The system detects queue imbalance. Tendency favors: <strong className="bg-yellow-200 px-2 py-1 rounded">{queueStatus.next_category || 'BALANCED'}</strong>
+                          <br/>The automated gate token will be pulled from this queue next to restore fairness.
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="bg-indigo-50 border border-indigo-300 p-6 rounded-2xl shadow-sm">
+                      <h3 className="font-bold mb-4 text-indigo-900 text-lg flex items-center gap-2">
+                        <Clock className="w-5 h-5" /> Phase 3: M/M/k Queuing Estimation
+                      </h3>
+                      <div className="grid grid-cols-3 gap-4 mb-4">
+                        <div className="bg-white p-3 rounded-xl border border-indigo-100 text-center">
+                          <div className="text-xs text-indigo-500 font-bold uppercase">Arrival Rate (λ)</div>
+                          <div className="text-xl font-black text-indigo-900">{queueStatus.mmk_metrics.arrival_rate_lambda} <span className="text-xs font-normal">/min</span></div>
+                        </div>
+                        <div className="bg-white p-3 rounded-xl border border-indigo-100 text-center">
+                          <div className="text-xs text-indigo-500 font-bold uppercase">Service Rate (µ)</div>
+                          <div className="text-xl font-black text-indigo-900">{queueStatus.mmk_metrics.service_rate_mu} <span className="text-xs font-normal">/min</span></div>
+                        </div>
+                        <div className="bg-white p-3 rounded-xl border border-indigo-100 text-center">
+                          <div className="text-xs text-indigo-500 font-bold uppercase">Active Counters (k)</div>
+                          <div className="text-xl font-black text-indigo-900">{queueStatus.mmk_metrics.counters_k}</div>
+                        </div>
+                      </div>
+                    </div>
+                  </>
+                )}
+
+                <div className="bg-orange-50 p-6 rounded-xl border border-orange-100 mt-2">
+                  <h4 className="font-bold text-orange-800 mb-2">System Diagnostics</h4>
+                  <p className="text-sm text-orange-600 mb-4">WebSocket and AI Server status.</p>
+                  <div className="flex items-center gap-2 text-sm font-bold text-green-700 mb-2">
+                    <span className="w-2 h-2 rounded-full bg-green-500"></span> WebSocket Broadcaster: Connected
+                  </div>
+                  <div className="flex items-center gap-2 text-sm font-bold text-green-700">
+                    <span className="w-2 h-2 rounded-full bg-green-500"></span> YOLOv8 Crowd CV: Active
+                  </div>
+                </div>
+
               </div>
             )}
           </section>
