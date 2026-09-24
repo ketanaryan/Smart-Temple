@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Users, Clock, AlertTriangle, CalendarCheck, Bell, Cloud, Thermometer, ShieldCheck, CheckCircle2, QrCode } from 'lucide-react';
+import { Users, Clock, AlertTriangle, CalendarCheck, Bell, Cloud, Thermometer, ShieldCheck, CheckCircle2, QrCode, Menu, X } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
 
 const API_URL = 'http://127.0.0.1:8000';
@@ -23,6 +23,7 @@ function App() {
   const [activeTab, setActiveTab] = useState('home'); // 'home' | 'devotee' | 'staff'
   const [isAdmin, setIsAdmin] = useState(localStorage.getItem('adminToken') === 'true');
   const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   
   const [userDashboard, setUserDashboard] = useState<any>(null);
   const [showBookingForm, setShowBookingForm] = useState(false);
@@ -154,33 +155,41 @@ function App() {
 
   return (
     <div className={`min-h-screen text-gray-800 font-sans flex flex-col ${activeTab === 'home' ? 'bg-black' : 'bg-gray-50'}`}>
-      <header className="bg-white text-gray-800 p-4 shadow-md flex flex-col md:flex-row justify-between items-center gap-4 md:gap-0 z-50 sticky top-0">
+      <header className="bg-white text-gray-800 p-4 shadow-md flex justify-between items-center z-50 sticky top-0 relative">
         <h1 className="text-xl md:text-2xl font-black flex items-center gap-2 tracking-tight">
           <div className="bg-orange-500 text-white p-1.5 rounded-lg"><Users className="w-5 h-5 md:w-6 md:h-6" /></div>
           Smart Temple
         </h1>
-        <div className="flex flex-wrap justify-center gap-3 md:gap-6 items-center text-xs md:text-sm font-semibold">
+        
+        <button 
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} 
+          className="md:hidden p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors focus:outline-none"
+        >
+          {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+        </button>
+
+        <div className={`${isMobileMenuOpen ? 'flex' : 'hidden'} md:flex flex-col md:flex-row absolute md:relative top-[100%] left-0 w-full md:w-auto bg-white md:bg-transparent shadow-lg md:shadow-none p-6 md:p-0 gap-6 md:gap-6 items-center text-sm font-semibold border-t md:border-0 border-gray-100 z-50 animate-in slide-in-from-top-2 md:animate-none`}>
           <button 
-            onClick={() => setActiveTab('home')}
+            onClick={() => { setActiveTab('home'); setIsMobileMenuOpen(false); }}
             className={`${activeTab === 'home' ? 'text-orange-500 border-b-2 border-orange-500 pb-1' : 'hover:text-orange-500 text-gray-600'}`}
           >
             Home
           </button>
           <button 
-            onClick={() => setActiveTab('devotee')}
+            onClick={() => { setActiveTab('devotee'); setIsMobileMenuOpen(false); }}
             className={`${activeTab === 'devotee' ? 'text-orange-500 border-b-2 border-orange-500 pb-1' : 'hover:text-orange-500 text-gray-600'}`}
           >
             Darshan Booking
           </button>
           <button 
-            onClick={() => setActiveTab('staff')}
+            onClick={() => { setActiveTab('staff'); setIsMobileMenuOpen(false); }}
             className="hover:text-orange-500 text-gray-600 font-bold"
           >
             Live Crowd Status
           </button>
           <button 
-            onClick={() => setActiveTab('admin')}
-            className="bg-orange-500 hover:bg-orange-600 text-white px-5 py-2 rounded-lg transition-colors flex items-center gap-2 cursor-pointer"
+            onClick={() => { setActiveTab('admin'); setIsMobileMenuOpen(false); }}
+            className="bg-orange-500 hover:bg-orange-600 text-white px-5 py-2.5 md:py-2 rounded-lg transition-colors flex items-center justify-center gap-2 cursor-pointer w-full md:w-auto"
           >
             <ShieldCheck className="w-4 h-4" /> Admin Portal
           </button>
