@@ -154,12 +154,12 @@ function App() {
 
   return (
     <div className={`min-h-screen text-gray-800 font-sans flex flex-col ${activeTab === 'home' ? 'bg-black' : 'bg-gray-50'}`}>
-      <header className="bg-white text-gray-800 p-4 shadow-md flex justify-between items-center z-50 sticky top-0">
-        <h1 className="text-2xl font-black flex items-center gap-2 tracking-tight">
-          <div className="bg-orange-500 text-white p-1.5 rounded-lg"><Users className="w-6 h-6" /></div>
+      <header className="bg-white text-gray-800 p-4 shadow-md flex flex-col md:flex-row justify-between items-center gap-4 md:gap-0 z-50 sticky top-0">
+        <h1 className="text-xl md:text-2xl font-black flex items-center gap-2 tracking-tight">
+          <div className="bg-orange-500 text-white p-1.5 rounded-lg"><Users className="w-5 h-5 md:w-6 md:h-6" /></div>
           Smart Temple
         </h1>
-        <div className="flex gap-6 items-center text-sm font-semibold">
+        <div className="flex flex-wrap justify-center gap-3 md:gap-6 items-center text-xs md:text-sm font-semibold">
           <button 
             onClick={() => setActiveTab('home')}
             className={`${activeTab === 'home' ? 'text-orange-500 border-b-2 border-orange-500 pb-1' : 'hover:text-orange-500 text-gray-600'}`}
@@ -237,18 +237,18 @@ function App() {
               <div className="absolute inset-0 bg-black/50"></div>
             </div>
 
-            <div className="relative z-10 bg-white/95 backdrop-blur-xl p-8 md:p-10 rounded-3xl shadow-2xl border border-white/40 max-w-xl w-full mx-auto">
-              <div className="text-center mb-8">
-                <div className="inline-flex bg-orange-100 p-3 rounded-full mb-4">
-                  <CalendarCheck className="w-8 h-8 text-orange-600" />
+            <div className="relative z-10 bg-white/95 backdrop-blur-xl p-6 sm:p-8 md:p-10 rounded-2xl md:rounded-3xl shadow-2xl border border-white/40 max-w-xl w-[95%] md:w-full mx-auto my-4 md:my-0">
+              <div className="text-center mb-6 md:mb-8">
+                <div className="inline-flex bg-orange-100 p-2 md:p-3 rounded-full mb-3 md:mb-4">
+                  <CalendarCheck className="w-6 h-6 md:w-8 md:h-8 text-orange-600" />
                 </div>
-                <h2 className="text-3xl font-black text-gray-900 tracking-tight">Book your Darshan</h2>
+                <h2 className="text-2xl md:text-3xl font-black text-gray-900 tracking-tight">Book your Darshan</h2>
                 <p className="text-gray-500 font-medium mt-2">Secure your digital token for a peaceful visit.</p>
               </div>
 
               {!localStorage.getItem('token') ? (
-                <div className="bg-orange-50/80 p-8 rounded-2xl border border-orange-100/50 mb-6 text-center shadow-inner relative overflow-hidden transition-all duration-300">
-                  <h3 className="font-bold text-orange-900 mb-2 text-xl">{authMode === 'login' ? 'Welcome Back' : 'Create an Account'}</h3>
+                <div className="bg-orange-50/80 p-5 md:p-8 rounded-xl md:rounded-2xl border border-orange-100/50 mb-6 text-center shadow-inner relative overflow-hidden transition-all duration-300">
+                  <h3 className="font-bold text-orange-900 mb-2 text-lg md:text-xl">{authMode === 'login' ? 'Welcome Back' : 'Create an Account'}</h3>
                   <p className="text-orange-700/80 text-sm mb-6">
                     {authMode === 'login' ? 'Please log in to make a genuine slot booking.' : 'Register to book your Darshan slots.'}
                   </p>
@@ -318,11 +318,11 @@ function App() {
               ) : (
                 <div className="w-full">
                   {!showBookingForm ? (
-                    <div className="bg-white/95 backdrop-blur-xl p-8 rounded-3xl shadow-xl border border-white/40 relative overflow-hidden animate-in fade-in zoom-in-95 duration-500">
+                    <div className="bg-white/95 backdrop-blur-xl p-6 md:p-8 rounded-2xl md:rounded-3xl shadow-xl border border-white/40 relative overflow-hidden animate-in fade-in zoom-in-95 duration-500">
                       <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-orange-400 to-orange-600"></div>
-                      <div className="flex justify-between items-start mb-8">
+                      <div className="flex justify-between items-start mb-6 md:mb-8">
                         <div>
-                          <h3 className="text-3xl font-black text-gray-900 tracking-tight">Welcome, {userDashboard?.user?.name || 'Devotee'}</h3>
+                          <h3 className="text-2xl md:text-3xl font-black text-gray-900 tracking-tight">Welcome, {userDashboard?.user?.name || 'Devotee'}</h3>
                           <p className="text-gray-500 font-medium mt-1">{userDashboard?.user?.email}</p>
                         </div>
                         <button onClick={() => { localStorage.removeItem('token'); window.location.reload(); }} className="text-sm font-bold text-gray-400 hover:text-red-500 transition-colors">Logout</button>
@@ -366,7 +366,7 @@ function App() {
                       </div>
                     </div>
                   ) : (
-                    <div className="bg-white/95 backdrop-blur-xl p-8 rounded-3xl shadow-xl border border-white/40 relative animate-in fade-in slide-in-from-bottom-4 duration-500">
+                    <div className="bg-white/95 backdrop-blur-xl p-6 md:p-8 rounded-2xl md:rounded-3xl shadow-xl border border-white/40 relative animate-in fade-in slide-in-from-bottom-4 duration-500">
                       <div className="flex justify-between items-center mb-6 pb-6 border-b border-gray-100">
                         <h3 className="text-xl font-black text-gray-900">Book New Slot</h3>
                         <button onClick={() => setShowBookingForm(false)} className="text-sm font-bold text-gray-500 hover:text-gray-900 bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-full transition-colors">&larr; Back to Profile</button>
