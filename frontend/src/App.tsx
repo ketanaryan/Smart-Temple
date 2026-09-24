@@ -156,9 +156,15 @@ function App() {
           </button>
           <button 
             onClick={() => setActiveTab('staff')}
+            className="hover:text-orange-500 text-gray-600 font-bold"
+          >
+            Live Crowd Status
+          </button>
+          <button 
+            onClick={() => setActiveTab('admin')}
             className="bg-orange-500 hover:bg-orange-600 text-white px-5 py-2 rounded-lg transition-colors flex items-center gap-2 cursor-pointer"
           >
-            <ShieldCheck className="w-4 h-4" /> Live Dashboard
+            <ShieldCheck className="w-4 h-4" /> Admin Portal
           </button>
         </div>
       </header>
@@ -401,45 +407,11 @@ function App() {
               <>
                 <div className="bg-gray-900 text-white p-6 rounded-2xl flex flex-col md:flex-row justify-between items-center shadow-lg border border-gray-800">
                   <div>
-                    <div className="text-gray-400 font-bold uppercase tracking-widest text-sm mb-1">Now Serving (Phase 5)</div>
+                    <div className="text-gray-400 font-bold uppercase tracking-widest text-sm mb-1">Now Serving</div>
                     <div className="text-5xl font-black text-orange-500 tracking-wider">
                       {currentToken || "WAITING"}
                     </div>
                   </div>
-                  {isAdmin ? (
-                    <div className="flex flex-col gap-2 items-end">
-                      <button 
-                        onClick={handleCallNext}
-                        className="mt-4 md:mt-0 bg-orange-600 hover:bg-orange-500 text-white px-8 py-4 rounded-xl font-bold text-xl shadow-lg transition-all active:scale-95 flex items-center gap-2"
-                      >
-                        CALL NEXT
-                      </button>
-                      <button 
-                        onClick={() => {
-                          localStorage.removeItem('adminToken');
-                          setIsAdmin(false);
-                        }}
-                        className="text-xs text-gray-500 hover:text-gray-300 underline"
-                      >
-                        Lock Admin Controls
-                      </button>
-                    </div>
-                  ) : (
-                    <button 
-                      onClick={() => {
-                        const pwd = prompt("Enter admin password to unlock queue controls (password: admin):");
-                        if (pwd === "admin") {
-                          localStorage.setItem('adminToken', 'true');
-                          setIsAdmin(true);
-                        } else if (pwd) {
-                          alert("Incorrect password.");
-                        }
-                      }}
-                      className="mt-4 md:mt-0 bg-gray-800 hover:bg-gray-700 text-gray-400 px-6 py-3 rounded-lg font-bold text-sm shadow-inner transition-all flex items-center gap-2 border border-gray-700"
-                    >
-                      <ShieldCheck className="w-4 h-4"/> Admin Unlock Required
-                    </button>
-                  )}
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -529,6 +501,91 @@ function App() {
               </div>
             )}
 
+          </section>
+        )}
+        {activeTab === 'admin' && (
+          <section className="bg-white p-8 rounded-xl shadow-sm border border-gray-100 flex flex-col gap-8 max-w-4xl mx-auto animate-in fade-in duration-300">
+            <div className="flex justify-between items-center border-b pb-4">
+              <h2 className="text-2xl font-bold flex items-center gap-3 text-orange-600">
+                <ShieldCheck className="w-7 h-7" />
+                Temple Administrator Portal
+              </h2>
+            </div>
+            
+            {!isAdmin ? (
+              <div className="bg-gray-50 border p-8 rounded-2xl flex flex-col items-center justify-center min-h-[40vh] text-center shadow-sm">
+                <ShieldCheck className="w-16 h-16 text-gray-400 mb-4" />
+                <h3 className="text-xl font-bold text-gray-800 mb-2">Restricted Area</h3>
+                <p className="text-gray-500 mb-6 max-w-md">You must authenticate as a Temple Administrator to view and control the live queue mechanics.</p>
+                <button 
+                  onClick={() => {
+                    const pwd = prompt("Enter admin password (password: admin):");
+                    if (pwd === "admin") {
+                      localStorage.setItem('adminToken', 'true');
+                      setIsAdmin(true);
+                    } else if (pwd) {
+                      alert("Incorrect password.");
+                    }
+                  }}
+                  className="bg-gray-800 hover:bg-gray-700 text-white px-8 py-3 rounded-lg font-bold text-md shadow-lg transition-all"
+                >
+                  Admin Login
+                </button>
+              </div>
+            ) : (
+              <div className="flex flex-col gap-6 animate-in slide-in-from-bottom-4 duration-500">
+                <div className="bg-gray-900 text-white p-6 rounded-2xl flex justify-between items-center shadow-lg border border-gray-800">
+                  <div>
+                    <div className="text-gray-400 font-bold uppercase tracking-widest text-sm mb-1">Queue Control</div>
+                    <div className="text-4xl font-black text-orange-500 tracking-wider">
+                      {currentToken || "WAITING"}
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-2 items-end">
+                    <button 
+                      onClick={handleCallNext}
+                      className="bg-orange-600 hover:bg-orange-500 text-white px-10 py-5 rounded-xl font-black text-xl shadow-lg transition-all active:scale-95 flex items-center gap-2 border-b-4 border-orange-800"
+                    >
+                      CALL NEXT DEVOTEE
+                    </button>
+                    <button 
+                      onClick={() => {
+                        localStorage.removeItem('adminToken');
+                        setIsAdmin(false);
+                      }}
+                      className="text-xs text-gray-500 hover:text-gray-300 underline font-bold mt-2"
+                    >
+                      Log out of Admin
+                    </button>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                  <div className="bg-gray-50 p-6 rounded-xl border">
+                    <h4 className="font-bold text-gray-700 mb-2">Current Analytics</h4>
+                    <p className="text-sm text-gray-500 mb-4">Live breakdown of the queue.</p>
+                    <div className="flex justify-between items-center border-b pb-2 mb-2">
+                      <span className="text-sm font-bold text-gray-600">Online Queue</span>
+                      <span className="font-black text-blue-600">{queueStatus?.online_queue || 0}</span>
+                    </div>
+                    <div className="flex justify-between items-center border-b pb-2 mb-2">
+                      <span className="text-sm font-bold text-gray-600">Walk-in Queue</span>
+                      <span className="font-black text-green-600">{queueStatus?.walkin_queue || 0}</span>
+                    </div>
+                  </div>
+                  <div className="bg-orange-50 p-6 rounded-xl border border-orange-100">
+                    <h4 className="font-bold text-orange-800 mb-2">System Diagnostics</h4>
+                    <p className="text-sm text-orange-600 mb-4">WebSocket and AI Server status.</p>
+                    <div className="flex items-center gap-2 text-sm font-bold text-green-700 mb-2">
+                      <span className="w-2 h-2 rounded-full bg-green-500"></span> WebSocket Broadcaster: Connected
+                    </div>
+                    <div className="flex items-center gap-2 text-sm font-bold text-green-700">
+                      <span className="w-2 h-2 rounded-full bg-green-500"></span> YOLOv8 Crowd CV: Active
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
           </section>
         )}
       </main>
