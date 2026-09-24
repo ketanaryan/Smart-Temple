@@ -23,7 +23,9 @@ function App() {
   const [activeTab, setActiveTab] = useState('home'); // 'home' | 'devotee' | 'staff'
   const [isAdmin, setIsAdmin] = useState(localStorage.getItem('adminToken') === 'true');
   const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
-
+  
+  const [userDashboard, setUserDashboard] = useState<any>(null);
+  const [showBookingForm, setShowBookingForm] = useState(false);
   const fetchTemples = async () => {
     try {
       const res = await axios.get(`${API_URL}/temples/`);
@@ -59,9 +61,24 @@ function App() {
     }
   };
 
+  const fetchUserDashboard = async () => {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+    try {
+      const res = await axios.get(`${API_URL}/users/me/dashboard`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setUserDashboard(res.data);
+    } catch (e) {
+      console.error("Session expired or invalid", e);
+      localStorage.removeItem('token');
+    }
+  };
+
   useEffect(() => {
     fetchTemples();
     fetchQueueStatus();
+    fetchUserDashboard();
     const interval = setInterval(fetchQueueStatus, 5000);
     
     // Phase 4: WebSocket for real-time CV alerts
@@ -299,15 +316,62 @@ function App() {
                   )}
                 </div>
               ) : (
-              <div className="bg-green-50 p-4 rounded-lg border border-green-100 mb-6 flex justify-between items-center">
-                <span className="text-green-800 font-medium text-sm">Authenticated as Verified Devotee</span>
-                <button onClick={() => { localStorage.removeItem('token'); window.location.reload(); }} className="text-xs text-green-700 underline font-bold">Logout</button>
-              </div>
-            )}
-            
-            {localStorage.getItem('token') && (
-              <div className="animate-in fade-in slide-in-from-top-4 duration-500">
-                <div className="mb-5">
+                <div className="w-full">
+                  {!showBookingForm ? (
+                    <div className="bg-white/95 backdrop-blur-xl p-8 rounded-3xl shadow-xl border border-white/40 relative overflow-hidden animate-in fade-in zoom-in-95 duration-500">
+                      <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-orange-400 to-orange-600"></div>
+                      <div className="flex justify-between items-start mb-8">
+                        <div>
+                          <h3 className="text-3xl font-black text-gray-900 tracking-tight">Welcome, {userDashboard?.user?.name || 'Devotee'}</h3>
+                          <p className="text-gray-500 font-medium mt-1">{userDashboard?.user?.email}</p>
+                        </div>
+                        <button onClick={() => { localStorage.removeItem('token'); window.location.reload(); }} className="text-sm font-bold text-gray-400 hover:text-red-500 transition-colors">Logout</button>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-4 mb-8">
+                        <div className="bg-orange-50 p-5 rounded-2xl border border-orange-100 flex flex-col justify-center">
+                          <div className="text-4xl font-black text-orange-600 mb-1">{userDashboard?.bookings?.length || 0}</div>
+                          <div className="text-xs font-bold text-orange-900/70 uppercase tracking-wider">Total Darshans</div>
+                        </div>
+                        <button 
+                          onClick={() => setShowBookingForm(true)}
+                          className="bg-gradient-to-br from-gray-900 to-black hover:from-black hover:to-gray-900 text-white p-5 rounded-2xl flex flex-col items-center justify-center gap-2 shadow-lg transition-transform active:scale-95 border border-gray-800"
+                        >
+                          <CalendarCheck className="w-8 h-8 text-orange-500" />
+                          <span className="font-bold">Book New Slot</span>
+                        </button>
+                      </div>
+
+                      <h4 className="font-bold text-gray-900 mb-4 flex items-center gap-2"><Clock className="w-5 h-5 text-gray-400"/> Recent Bookings</h4>
+                      <div className="flex flex-col gap-3 max-h-60 overflow-y-auto pr-2">
+                        {(!userDashboard?.bookings || userDashboard.bookings.length === 0) ? (
+                          <div className="text-center p-8 bg-gray-50 rounded-2xl border border-dashed border-gray-200 text-gray-500">
+                            <div className="font-bold text-gray-700 mb-1">No past bookings</div>
+                            <div className="text-sm">Click 'Book New Slot' to get started!</div>
+                          </div>
+                        ) : (
+                          userDashboard.bookings.map((b: any, i: number) => (
+                            <div key={i} className="flex items-center justify-between p-4 bg-white rounded-xl border border-gray-100 shadow-sm hover:border-orange-200 transition-colors">
+                              <div>
+                                <div className="font-bold text-gray-900">{b.temple_name}</div>
+                                <div className="text-xs font-medium text-gray-500 mt-1">{b.date} • {b.start_time.substring(0,5)} - {b.end_time.substring(0,5)}</div>
+                              </div>
+                              <div className="text-right">
+                                <div className="font-black text-orange-600 bg-orange-50 px-3 py-1 rounded-lg inline-block">{b.token}</div>
+                                <div className="text-[10px] font-bold text-gray-400 uppercase mt-2">{b.status}</div>
+                              </div>
+                            </div>
+                          )).reverse()
+                        )}
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="bg-white/95 backdrop-blur-xl p-8 rounded-3xl shadow-xl border border-white/40 relative animate-in fade-in slide-in-from-bottom-4 duration-500">
+                      <div className="flex justify-between items-center mb-6 pb-6 border-b border-gray-100">
+                        <h3 className="text-xl font-black text-gray-900">Book New Slot</h3>
+                        <button onClick={() => setShowBookingForm(false)} className="text-sm font-bold text-gray-500 hover:text-gray-900 bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-full transition-colors">&larr; Back to Profile</button>
+                      </div>
+                      <div className="mb-5">
                   <label className="block text-sm font-semibold mb-2 text-gray-700">Select Temple</label>
                   <select 
                     className="w-full border p-3 rounded-lg bg-gray-50 focus:bg-white focus:ring-2 focus:ring-orange-500 outline-none transition" 
@@ -410,8 +474,10 @@ function App() {
               </div>
             )}
             </div>
-          </section>
-        )}
+          )}
+          </div>
+        </section>
+      )}
 
         {activeTab === 'staff' && (
           <section className="bg-white p-8 rounded-xl shadow-sm border border-gray-100 flex flex-col gap-8 max-w-4xl mx-auto">

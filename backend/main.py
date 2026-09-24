@@ -75,6 +75,33 @@ def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db:
     )
     return {"access_token": access_token, "token_type": "bearer"}
 
+@app.get("/users/me/dashboard")
+def get_user_dashboard(current_user: models.User = Depends(get_current_user), db: Session = Depends(get_db)):
+    bookings = db.query(models.Booking).filter(models.Booking.user_id == current_user.id).all()
+    results = []
+    for b in bookings:
+        slot = db.query(models.TimeSlot).filter(models.TimeSlot.id == b.slot_id).first()
+        temple = db.query(models.Temple).filter(models.Temple.id == slot.temple_id).first() if slot else None
+        if not slot or not temple:
+            continue
+        results.append({
+            "token": b.token_number,
+            "status": b.status,
+            "temple_name": temple.name,
+            "city": temple.city,
+            "date": slot.date,
+            "start_time": slot.start_time,
+            "end_time": slot.end_time,
+            "booking_time": b.booking_time
+        })
+    return {
+        "user": {
+            "name": current_user.name,
+            "email": current_user.email
+        },
+        "bookings": results
+    }
+
 # Phase 4: WebSocket Manager for Real-time CV Alerts
 class ConnectionManager:
     def __init__(self):
