@@ -373,6 +373,7 @@ function App() {
                       </>
                     ) : (
                       <span className="font-bold text-lg">{bookingMessage}</span>
+                    )}
                   </div>
                 )}
               </div>
