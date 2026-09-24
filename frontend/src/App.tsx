@@ -169,7 +169,7 @@ function App() {
         </div>
       </header>
 
-      <main className={`flex-1 flex flex-col ${activeTab === 'home' ? 'w-full' : 'p-8 max-w-5xl w-full mx-auto'}`}>
+      <main className={`flex-1 flex flex-col ${['home', 'devotee'].includes(activeTab) ? 'w-full' : 'p-8 max-w-5xl w-full mx-auto'}`}>
         
         {activeTab === 'home' && (
           <section className="relative flex-1 flex flex-col items-start justify-center text-left min-h-[85vh] animate-in fade-in duration-700 -mt-2">
@@ -211,52 +211,63 @@ function App() {
         )}
 
         {activeTab === 'devotee' && (
-          <section className="bg-white p-8 rounded-xl shadow-sm border border-gray-100 max-w-2xl mx-auto animate-in fade-in duration-300">
-            <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
-              <CalendarCheck className="w-6 h-6 text-orange-500" />
-              Book your Darshan Slot
-            </h2>
+          <section className="relative flex-1 flex flex-col items-center justify-center p-4 md:p-12 min-h-[85vh] animate-in fade-in duration-500 -mt-2">
+            <div 
+              className="absolute inset-0 z-0 bg-cover bg-center filter blur-sm scale-[1.02]"
+              style={{ backgroundImage: "url('/temple-bg.jpg')" }}
+            >
+              <div className="absolute inset-0 bg-black/50"></div>
+            </div>
 
-            {!localStorage.getItem('token') ? (
-              <div className="bg-orange-50 p-6 rounded-lg border border-orange-100 mb-6 text-center">
-                <h3 className="font-bold text-orange-900 mb-2">Authentication Required</h3>
-                <p className="text-orange-700 text-sm mb-4">Please log in to make a genuine slot booking.</p>
-                <div className="flex flex-col gap-3">
-                  <input id="authEmail" type="email" placeholder="Email" className="p-3 border rounded-lg" />
-                  <input id="authPassword" type="password" placeholder="Password" className="p-3 border rounded-lg" />
-                  <div className="flex gap-3 mt-2">
-                    <button 
-                      onClick={async () => {
-                        const email = (document.getElementById('authEmail') as HTMLInputElement).value;
-                        const pwd = (document.getElementById('authPassword') as HTMLInputElement).value;
-                        try {
-                          const formData = new URLSearchParams();
-                          formData.append('username', email);
-                          formData.append('password', pwd);
-                          const res = await axios.post(`${API_URL}/token`, formData, {
-                            headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
-                          });
-                          localStorage.setItem('token', res.data.access_token);
-                          window.location.reload();
-                        } catch (e: any) { alert("Login Failed: " + (e.response?.data?.detail || "Invalid credentials")); }
-                      }}
-                      className="flex-1 bg-orange-600 text-white font-bold py-3 rounded-lg"
-                    >Login</button>
-                    <button 
-                      onClick={async () => {
-                        const email = (document.getElementById('authEmail') as HTMLInputElement).value;
-                        const pwd = (document.getElementById('authPassword') as HTMLInputElement).value;
-                        try {
-                          await axios.post(`${API_URL}/register`, { email, password: pwd, name: email.split('@')[0] });
-                          alert("Registered successfully! Please login now.");
-                        } catch (e: any) { alert("Registration Failed: " + (e.response?.data?.detail || "Error")); }
-                      }}
-                      className="flex-1 bg-gray-200 text-gray-800 font-bold py-3 rounded-lg hover:bg-gray-300"
-                    >Register</button>
+            <div className="relative z-10 bg-white/95 backdrop-blur-xl p-8 md:p-10 rounded-3xl shadow-2xl border border-white/40 max-w-xl w-full mx-auto">
+              <div className="text-center mb-8">
+                <div className="inline-flex bg-orange-100 p-3 rounded-full mb-4">
+                  <CalendarCheck className="w-8 h-8 text-orange-600" />
+                </div>
+                <h2 className="text-3xl font-black text-gray-900 tracking-tight">Book your Darshan</h2>
+                <p className="text-gray-500 font-medium mt-2">Secure your digital token for a peaceful visit.</p>
+              </div>
+
+              {!localStorage.getItem('token') ? (
+                <div className="bg-orange-50/80 p-8 rounded-2xl border border-orange-100/50 mb-6 text-center shadow-inner">
+                  <h3 className="font-bold text-orange-900 mb-2 text-lg">Authentication Required</h3>
+                  <p className="text-orange-700/80 text-sm mb-6">Please log in to make a genuine slot booking.</p>
+                  <div className="flex flex-col gap-4">
+                    <input id="authEmail" type="email" placeholder="Email Address" className="p-4 border border-orange-200/50 rounded-xl bg-white shadow-sm focus:ring-2 focus:ring-orange-500 outline-none transition" />
+                    <input id="authPassword" type="password" placeholder="Password" className="p-4 border border-orange-200/50 rounded-xl bg-white shadow-sm focus:ring-2 focus:ring-orange-500 outline-none transition" />
+                    <div className="flex gap-3 mt-4">
+                      <button 
+                        onClick={async () => {
+                          const email = (document.getElementById('authEmail') as HTMLInputElement).value;
+                          const pwd = (document.getElementById('authPassword') as HTMLInputElement).value;
+                          try {
+                            const formData = new URLSearchParams();
+                            formData.append('username', email);
+                            formData.append('password', pwd);
+                            const res = await axios.post(`${API_URL}/token`, formData, {
+                              headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+                            });
+                            localStorage.setItem('token', res.data.access_token);
+                            window.location.reload();
+                          } catch (e: any) { alert("Login Failed: " + (e.response?.data?.detail || "Invalid credentials")); }
+                        }}
+                        className="flex-1 bg-gradient-to-r from-orange-600 to-orange-500 hover:from-orange-700 hover:to-orange-600 text-white font-bold py-4 rounded-xl shadow-lg transition-all active:scale-95"
+                      >Login</button>
+                      <button 
+                        onClick={async () => {
+                          const email = (document.getElementById('authEmail') as HTMLInputElement).value;
+                          const pwd = (document.getElementById('authPassword') as HTMLInputElement).value;
+                          try {
+                            await axios.post(`${API_URL}/register`, { email, password: pwd, name: email.split('@')[0] });
+                            alert("Registered successfully! Please login now.");
+                          } catch (e: any) { alert("Registration Failed: " + (e.response?.data?.detail || "Error")); }
+                        }}
+                        className="flex-1 bg-white border-2 border-gray-200 text-gray-700 font-bold py-4 rounded-xl hover:bg-gray-50 hover:border-gray-300 transition-all active:scale-95"
+                      >Register</button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ) : (
+              ) : (
               <div className="bg-green-50 p-4 rounded-lg border border-green-100 mb-6 flex justify-between items-center">
                 <span className="text-green-800 font-medium text-sm">Authenticated as Verified Devotee</span>
                 <button onClick={() => { localStorage.removeItem('token'); window.location.reload(); }} className="text-xs text-green-700 underline font-bold">Logout</button>
@@ -320,45 +331,48 @@ function App() {
                   )}
                 </div>
 
-                <div className="bg-gray-50 border p-4 rounded-lg mb-6 flex flex-col gap-3">
-                  <label className="flex items-center gap-3 cursor-pointer">
-                    <input type="checkbox" className="w-5 h-5 accent-orange-600 rounded" checked={isPriority} onChange={e => setIsPriority(e.target.checked)} />
+                <div className="bg-gray-50/80 border p-5 rounded-2xl mb-8 flex flex-col gap-4">
+                  <label className="flex items-start gap-4 cursor-pointer group">
+                    <input type="checkbox" className="w-5 h-5 accent-orange-600 rounded mt-1" checked={isPriority} onChange={e => setIsPriority(e.target.checked)} />
                     <div>
-                      <div className="font-bold text-gray-800">Senior Citizen / Divyang (Priority)</div>
-                      <div className="text-xs text-gray-500">Expedites queue progression automatically</div>
+                      <div className="font-bold text-gray-800 group-hover:text-orange-700 transition-colors">Senior Citizen / Divyang (Priority)</div>
+                      <div className="text-sm text-gray-500 mt-0.5">Expedites queue progression automatically</div>
                     </div>
                   </label>
-                  <label className="flex items-center gap-3 cursor-pointer">
-                    <input type="checkbox" className="w-5 h-5 accent-green-600 rounded" checked={notifyWhatsApp} onChange={e => setNotifyWhatsApp(e.target.checked)} />
+                  <div className="h-px w-full bg-gray-200/60"></div>
+                  <label className="flex items-start gap-4 cursor-pointer group">
+                    <input type="checkbox" className="w-5 h-5 accent-green-600 rounded mt-1" checked={notifyWhatsApp} onChange={e => setNotifyWhatsApp(e.target.checked)} />
                     <div>
-                      <div className="font-bold text-green-800 flex items-center gap-1">Enable WhatsApp Alerts <Bell className="w-4 h-4"/></div>
-                      <div className="text-xs text-gray-500">Get notified 15 mins before your expected darshan time</div>
+                      <div className="font-bold text-green-800 flex items-center gap-1.5 group-hover:text-green-900 transition-colors">
+                        Enable WhatsApp Alerts <Bell className="w-4 h-4"/>
+                      </div>
+                      <div className="text-sm text-gray-500 mt-0.5">Get notified 15 mins before your expected darshan time</div>
                     </div>
                   </label>
                 </div>
 
                 <button 
                   onClick={handleBooking}
-                  className="w-full bg-orange-600 text-white p-4 rounded-lg font-bold text-lg hover:bg-orange-700 hover:shadow-lg transition-all active:scale-[0.98]"
+                  className="w-full bg-gradient-to-r from-orange-600 to-orange-500 hover:from-orange-700 hover:to-orange-600 text-white py-5 rounded-xl font-black text-xl shadow-[0_8px_30px_rgb(234,88,12,0.3)] transition-all active:scale-[0.98] active:shadow-sm"
                 >
-                  Confirm Booking
+                  Confirm Booking Request
                 </button>
                 
                 {bookingMessage && (
-                  <div className={`mt-6 p-6 rounded-xl border-2 flex flex-col items-center text-center shadow-lg animate-in fade-in zoom-in duration-300 ${bookingMessage.includes('Success') ? 'bg-green-50/80 border-green-400' : 'bg-red-50 text-red-800 border-red-200'}`}>
+                  <div className={`mt-8 p-8 rounded-2xl flex flex-col items-center text-center shadow-lg relative overflow-hidden ${bookingMessage.includes('Success') ? 'bg-green-50 border-2 border-green-500 text-green-800' : 'bg-red-50 text-red-800 border-2 border-red-200'}`}>
+                    {bookingMessage.includes('Success') && <div className="absolute top-0 left-0 w-full h-1 bg-green-500"></div>}
                     {bookingMessage.includes('Success') ? (
                       <>
-                        <CheckCircle2 className="w-16 h-16 text-green-500 mb-2" />
-                        <h3 className="text-2xl font-black text-green-800 tracking-wider">{bookedToken}</h3>
-                        <p className="text-green-700 font-medium mb-4">Your e-Darshan Token</p>
-                        <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
-                          <QRCodeSVG value={bookedToken} size={160} level="H" includeMargin={true} fgColor="#064e3b" />
+                        <h3 className="text-2xl font-black mb-2 text-green-900">Booking Confirmed!</h3>
+                        <p className="mb-6 font-medium text-green-700">Your digital e-Token has been generated.</p>
+                        <div className="bg-white p-6 inline-block rounded-2xl shadow-sm border border-green-100">
+                          <QRCodeSVG value={bookedToken} size={180} level="H" includeMargin={true} fgColor="#064e3b" />
                         </div>
-                        <p className="text-sm text-gray-600 mt-4 flex items-center gap-2"><QrCode className="w-4 h-4"/> Show this QR at the smart entrance gate</p>
-                        {notifyWhatsApp && <p className="text-xs font-bold text-green-700 mt-2">✓ WhatsApp alerts enabled for +91 ********</p>}
+                        <p className="text-sm text-gray-600 mt-6 flex justify-center items-center gap-2 font-bold"><QrCode className="w-5 h-5"/> Show this QR at the smart entrance gate</p>
+                        {notifyWhatsApp && <p className="text-sm font-black text-green-700 mt-3">✓ WhatsApp alerts enabled for +91 ********</p>}
                       </>
                     ) : (
-                      <span className="font-bold">{bookingMessage}</span>
+                      <span className="font-bold text-lg">{bookingMessage}</span>
                     )}
                   </div>
                 )}
